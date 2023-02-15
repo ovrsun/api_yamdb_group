@@ -34,7 +34,7 @@ class Review(models.Model):
         ordering = ['-pub_date']
 
     def __str__(self):
-        return self.text[20]
+        return self.text
 
 
 class Comment(models.Model):
@@ -63,3 +63,6 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
+
+    def __str__(self):
+        return self.text
