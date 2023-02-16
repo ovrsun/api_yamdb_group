@@ -12,7 +12,7 @@ class Review(models.Model):
         )
     text = models.TextField(max_length=300)
     author = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='автор',
@@ -50,7 +50,7 @@ class Comment(models.Model):
         verbose_name='Тест коментария',
     )
     author = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='автор комента',
