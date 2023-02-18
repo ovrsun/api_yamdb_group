@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from .validators import validate_username
 
 USER = 'user'
 MODERATOR = 'moderator'
@@ -10,19 +10,26 @@ ROLES = (
     (MODERATOR, 'moderator'),
     (ADMIN, 'admin'),
 )
+
+
 class CustomUser(AbstractUser):
     username = models.CharField(
         'Имя пользователя',
-        max_length=30,
+        validators=[validate_username],
+        max_length=150,
         unique=True,
+        blank=False,
+        null=False,
     )
     email = models.EmailField(
         'Почта',
-        max_length=50,
+        max_length=254,
         unique=True,
+        blank=False,
+        null=False,
     )
-    first_name = models.CharField('Имя', max_length=30, blank=True)
-    last_name = models.CharField('Фамилия', max_length=30, blank=True)
+    first_name = models.CharField('Имя', max_length=150, blank=True)
+    last_name = models.CharField('Фамилия', max_length=150, blank=True)
     bio = models.TextField(
         'Биография',
         blank=True

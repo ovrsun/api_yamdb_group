@@ -1,8 +1,19 @@
+import re
+
 from django.core.exceptions import ValidationError
 
 
-def validate_username(value):
-    if value == 'me':
+def validate_username(name):
+    regex = re.compile(r'^[\w.@+-]+')
+    if not regex.match(name):
         raise ValidationError(
-            'Имя me недоступно!'
+            'Недопустимые символы в имени!'
+        )
+    if name == 'me':
+        raise ValidationError(
+            'Такое имя недоступно!'
+        )
+    if name is None or name == '':
+        raise ValidationError(
+            'Нужно заполнить!'
         )
