@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'rest_framework',
-    # 'rest_framework_simplejwt',  # выбивает ошибку при запуске сервера
+    'rest_framework_simplejwt',
+    'titles.apps.TitlesConfig',
 ]
 
 MIDDLEWARE = [
