@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+
 from users.models import CustomUser
 
 
@@ -23,9 +25,25 @@ class TokenSerializer(serializers.ModelSerializer):
 
 
 class SignUpSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length=254, required=True)
-    username = serializers.CharField(max_length=150, required=True)
+    username = serializers.RegexField(
+        r"^[\w.@+-]+\Z$",
+        max_length=150,
+        validators=[
+            UniqueValidator(queryset=CustomUser.objects.all())
+        ]
+    )
+    email = serializers.EmailField(
+        max_length=254,
+        validators=[
+            UniqueValidator(queryset=CustomUser.objects.all())
+        ]
+    )
+
+    def validate_username(self, value):
+        if value.lower() == "me":
+            raise serializers.ValidationError("Username 'me' is not valid")
+        return value
 
     class Meta:
-        fields = ('username', 'email')
+        fields = ("username", "email")
         model = CustomUser

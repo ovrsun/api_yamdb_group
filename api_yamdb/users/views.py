@@ -1,8 +1,8 @@
-from rest_framework import status, viewsets, filters
+from rest_framework import status, viewsets, filters, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from django.core.mail import send_mail
 from users.models import CustomUser
 from django.shortcuts import get_object_or_404
@@ -51,29 +51,34 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
 
 
-class SignUp(APIView):
-    def post(self, request):
-        try:
-            user = CustomUser.objects.get(
-                username=request.data['username'],
-                email=request.data['email']
-            )
-            serializer = SignUpSerializer(user, data=request.data)
-        except Exception:
-            serializer = SignUpSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        code = str(randint(100000, 999999))
-        serializer.save(confirmation_code=code)
-        ndata = serializer.validated_data
-        user = CustomUser.objects.get(username=ndata['username'])
-        send_mail(
-            'Код для вашей регистрации',
-            f'Код: {code}',
-            'api_yamdb@yandex.ru',
-            [user.email],
-            fail_silently=False,
+@api_view(["POST"])
+@permission_classes([permissions.AllowAny])
+def signup(request):
+    try:
+        user = CustomUser.objects.get(
+            username=request.data['username'],
+            email=request.data['email']
         )
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = SignUpSerializer(user, data=request.data)
+    except Exception:
+        serializer = SignUpSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    user = get_object_or_404(
+        CustomUser,
+        username=serializer.validated_data["username"],
+        email=serializer.validated_data["email"]
+    )
+    code = str(randint(100000, 999999))
+    serializer.save(confirmation_code=code)
+    send_mail(
+        'Код для вашей регистрации',
+        f'Код: {code}',
+        'api_yamdb@yandex.ru',
+        [user.email],
+        fail_silently=False,
+    )
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GetToken(APIView):
