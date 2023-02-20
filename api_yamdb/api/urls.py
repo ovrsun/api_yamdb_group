@@ -7,13 +7,13 @@ from .views import CategoryViewSet, GenreViewSet, TitleViewSet
 app_name = 'api'
 
 
-router = routers.DefaultRouter()
-router.register('titles', TitleViewSet)
-router.register('categories', CategoryViewSet)
-router.register('genres', GenreViewSet)
+router_v1 = routers.DefaultRouter()
+router_v1.register('titles', TitleViewSet)
+router_v1.register('categories', CategoryViewSet)
+router_v1.register('genres', GenreViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('', include(router_v1.urls)),
     # path('auth/signup/', a.as_view()),
     # path('auth/token/', b.as_view()),
 ]
