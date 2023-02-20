@@ -1,4 +1,5 @@
-from rest_framework.serializers import ModelSerializer, SlugRelatedField
+from rest_framework.serializers import (
+    ModelSerializer, SlugRelatedField, IntegerField)
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 
@@ -8,19 +9,44 @@ from reviews.models import Category, Genre, Title, Review, Comment
 class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
+        lookup_field = 'slug'
         fields = '__all__'
 
 
 class GenreSerializer(ModelSerializer):
     class Meta:
         model = Genre
+        lookup_field = 'slug'
         fields = '__all__'
 
 
-class TitleSerializer(ModelSerializer):
+class TitleSerializerGet(ModelSerializer):
+    category = CategorySerializer(read_only=True)
+    genre = GenreSerializer(
+        read_only=True,
+        many=True
+    )
+    rating = IntegerField(read_only=True)
+
     class Meta:
         model = Title
         fields = '__all__'
+
+
+class TitlSerializerPost(ModelSerializer):
+    category = SlugRelatedField(
+        queryset=Category.objects.all(),
+        slug_field='slug'
+    )
+    genre = SlugRelatedField(
+        queryset=Genre.objects.all(),
+        slug_field='slug',
+        many=True
+    )
+
+    class Meta:
+        fields = '__all__'
+        model = Title
 
 
 class ReviewSerializer(ModelSerializer):
