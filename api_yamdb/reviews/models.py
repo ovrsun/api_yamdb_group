@@ -10,6 +10,9 @@ class Category(models.Model):
     slug = models.SlugField(unique=True,
                             verbose_name='Слаг категории')
 
+    class Meta:
+        ordering = ('id', )
+
     def __str__(self):
         return self.name
 
@@ -19,6 +22,9 @@ class Genre(models.Model):
                             verbose_name='Название жанра')
     slug = models.SlugField(unique=True,
                             verbose_name='Слаг жанра')
+
+    class Meta:
+        ordering = ('id', )
 
     def __str__(self):
         return self.name
@@ -33,6 +39,9 @@ class Title(models.Model):
                                    verbose_name='жанр')
     description = models.CharField(max_length=200, null=True, blank=True)
     year = models.IntegerField()
+
+    class Meta:
+        ordering = ('id', )
 
     def __str__(self):
         return self.name
@@ -67,7 +76,7 @@ class Review(models.Model):
     )
 
     class Meta:
-        ordering = ['pub_date']
+        ordering = ['id']
         constraints = [models.UniqueConstraint(fields=('title', 'author',),
                        name='unique_rewiew')]
 
@@ -100,7 +109,7 @@ class Comment(models.Model):
     )
 
     class Meta:
-        ordering = ['pub_date']
+        ordering = ('id', )
 
     def __str__(self):
         return self.text

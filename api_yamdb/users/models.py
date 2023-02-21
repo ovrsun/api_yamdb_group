@@ -54,3 +54,11 @@ class CustomUser(AbstractUser):
     @property
     def is_admin(self):
         return self.role == 'admin'
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return self.username

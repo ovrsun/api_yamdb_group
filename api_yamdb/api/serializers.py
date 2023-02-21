@@ -21,16 +21,15 @@ class GenreSerializer(ModelSerializer):
 
 
 class TitleSerializerGet(ModelSerializer):
-    category = CategorySerializer(read_only=True)
-    genre = GenreSerializer(
-        read_only=True,
-        many=True
-    )
-    rating = IntegerField(read_only=True)
+    category = CategorySerializer()
+    genre = GenreSerializer(many=True)
+    rating = IntegerField()
 
     class Meta:
         model = Title
-        fields = '__all__'
+        fields = ('id', 'name', 'year', 'rating',
+                  'description', 'genre', 'category')
+        read_only_fields = ['__all__']
 
 
 class TitlSerializerPost(ModelSerializer):
@@ -45,15 +44,12 @@ class TitlSerializerPost(ModelSerializer):
     )
 
     class Meta:
-        fields = '__all__'
+        fields = ('id', 'name', 'year',
+                  'description', 'genre', 'category')
         model = Title
 
 
 class ReviewSerializer(ModelSerializer):
-    title = SlugRelatedField(
-        slug_field='name',
-        read_only=True
-    )
     author = SlugRelatedField(
         slug_field='username',
         read_only=True
@@ -78,7 +74,7 @@ class ReviewSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
 
 
 class CommentSerializer(ModelSerializer):
