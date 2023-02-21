@@ -1,9 +1,13 @@
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
-from rest_framework.viewsets import ModelViewSet
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.filters import SearchFilter
+from rest_framework import mixins
 
-from .permissions import IsAuthorModeratorAdminOrReadOnlyPermission, IsAdminUserOrReadOnly
+from .permissions import (
+    IsAuthorModeratorAdminOrReadOnlyPermission, IsAdminUserOrReadOnly,
+    IsAdminOrReadOnlyPermission)
 
 from .serializers import (ReviewSerializer, CommentSerializer,
                           GenreSerializer, CategorySerializer,
@@ -11,20 +15,29 @@ from .serializers import (ReviewSerializer, CommentSerializer,
 
 from reviews.models import Title, Review, Category, Genre
 
+from .filters import TitleFilter
 
-class CategoryViewSet(ModelViewSet):
+
+class ListCreateDestroyViewSet(
+    mixins.CreateModelMixin, mixins.ListModelMixin,
+    mixins.DestroyModelMixin, GenericViewSet
+):
+    pass
+
+
+class CategoryViewSet(ListCreateDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = ( )
+    permission_classes = (IsAdminOrReadOnlyPermission, )
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
 
 
-class GenreViewSet(ModelViewSet):
+class GenreViewSet(ListCreateDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (IsAuthorModeratorAdminOrReadOnlyPermission, )
+    permission_classes = (IsAdminOrReadOnlyPermission, )
     filter_backends = (SearchFilter,)
     search_fields = ('name', )
     lookup_field = 'slug'
@@ -33,6 +46,8 @@ class GenreViewSet(ModelViewSet):
 class TitleViewSet(ModelViewSet):
     queryset = Title.objects.annotate(rating=Avg('reviews__score')).all()
     permission_classes = (IsAdminUserOrReadOnly, )
+    filter_backends = (DjangoFilterBackend, )
+    filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
