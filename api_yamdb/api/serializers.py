@@ -1,5 +1,6 @@
 from rest_framework.serializers import (
     ModelSerializer, SlugRelatedField, IntegerField)
+from rest_framework.validators import UniqueValidator
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 
@@ -32,7 +33,7 @@ class TitleSerializerGet(ModelSerializer):
         read_only_fields = ['__all__']
 
 
-class TitlSerializerPost(ModelSerializer):
+class TitleSerializerPost(ModelSerializer):
     category = SlugRelatedField(
         queryset=Category.objects.all(),
         slug_field='slug'
@@ -47,6 +48,7 @@ class TitlSerializerPost(ModelSerializer):
         fields = ('id', 'name', 'year',
                   'description', 'genre', 'category')
         model = Title
+        # validators = [UniqueValidator(queryset=Category.objects.all())]
 
 
 class ReviewSerializer(ModelSerializer):
