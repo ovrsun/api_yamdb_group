@@ -15,7 +15,7 @@ from reviews.models import Title, Review, Category, Genre
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsAuthorModeratorAdminOrReadOnlyPermission,)
+    permission_classes = ( )
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -31,7 +31,7 @@ class GenreViewSet(ModelViewSet):
 
 
 class TitleViewSet(ModelViewSet):
-    queryset = Title.objects.annotate(raiting=Avg('reviews__score')).all()
+    queryset = Title.objects.annotate(rating=Avg('reviews__score')).all()
     permission_classes = (IsAdminUserOrReadOnly, )
 
     def get_serializer_class(self):

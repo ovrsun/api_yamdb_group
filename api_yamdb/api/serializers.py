@@ -10,14 +10,14 @@ class CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
         lookup_field = 'slug'
-        fields = '__all__'
+        fields = ('name', 'slug')
 
 
 class GenreSerializer(ModelSerializer):
     class Meta:
         model = Genre
         lookup_field = 'slug'
-        fields = '__all__'
+        fields = ('name', 'slug')
 
 
 class TitleSerializerGet(ModelSerializer):
@@ -71,13 +71,13 @@ class ReviewSerializer(ModelSerializer):
         title = get_object_or_404(Title, pk=title_id)
         if (
             request.method == 'POST'
-            and Review.objects.filters(title=title, author=author).exists()
+            and Review.objects.filter(title=title, author=author).exists()
         ):
             raise ValidationError('Отзыв можно сделать один раз')
         return value
 
     class Meta:
-        models = Review
+        model = Review
         fields = '__all__'
 
 
@@ -92,5 +92,5 @@ class CommentSerializer(ModelSerializer):
     )
 
     class Meta:
-        models = Comment
+        model = Comment
         fields = '__all__'
