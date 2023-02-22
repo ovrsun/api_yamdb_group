@@ -4,7 +4,15 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
-from reviews.models import Category, Genre, Review, Title
+from .permissions import (
+    IsAuthorModeratorAdminOrReadOnlyPermission, IsAdminUserOrReadOnly,
+    IsAdminOrReadOnlyPermission)
+
+from .serializers import (ReviewSerializer, CommentSerializer,
+                          GenreSerializer, CategorySerializer,
+                          TitleSerializerGet, TitleSerializerPost)
+
+from reviews.models import Title, Review, Category, Genre
 
 from .filters import TitleFilter
 
@@ -49,7 +57,7 @@ class TitleViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
             return TitleSerializerGet
-        return TitlSerializerPost
+        return TitleSerializerPost
 
 
 class ReviewViewSet(ModelViewSet):
