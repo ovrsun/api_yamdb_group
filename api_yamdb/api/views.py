@@ -40,7 +40,8 @@ class GenreViewSet(ListPostDeleteViewSet):
 
 class TitleViewSet(ModelViewSet):
     """Работает над всеми операциями с произведениями."""
-    queryset = Title.objects.annotate(rating=Avg('reviews__score')).all()
+    queryset = Title.objects.annotate(
+        rating=Avg('reviews__score')).order_by('id')
     permission_classes = (IsAdminUserOrReadOnly, )
     filter_backends = (DjangoFilterBackend, )
     filterset_class = TitleFilter
