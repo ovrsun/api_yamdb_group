@@ -1,10 +1,13 @@
-from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 
 from users.models import CustomUser
 
+from api.validators import validate_year
+
 
 class Category(models.Model):
+    """Модель категорий к произведениям"""
     name = models.CharField(max_length=25,
                             verbose_name='Имя категории')
     slug = models.SlugField(unique=True,
@@ -18,6 +21,7 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
+    """Модель жанров"""
     name = models.CharField(max_length=25,
                             verbose_name='Название жанра')
     slug = models.SlugField(unique=True,
@@ -31,6 +35,7 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
+    """Модель произведений"""
     name = models.CharField(max_length=256)
     category = models.ForeignKey(Category, related_name='titles',
                                  on_delete=models.SET_NULL, null=True,
@@ -38,7 +43,7 @@ class Title(models.Model):
     genre = models.ManyToManyField(Genre, related_name='titles',
                                    verbose_name='жанр')
     description = models.CharField(max_length=200, null=True, blank=True)
-    year = models.IntegerField()
+    year = models.IntegerField(validators=(validate_year,))
 
     class Meta:
         ordering = ('id', )

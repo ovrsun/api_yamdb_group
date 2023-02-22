@@ -1,9 +1,9 @@
-from rest_framework.serializers import (
-    ModelSerializer, SlugRelatedField, IntegerField)
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+from rest_framework.serializers import (IntegerField, ModelSerializer,
+                                        SlugRelatedField)
 
-from reviews.models import Category, Genre, Title, Review, Comment
+from reviews.models import Category, Comment, Genre, Review, Title
 
 
 class CategorySerializer(ModelSerializer):

@@ -1,24 +1,27 @@
-from rest_framework import status, viewsets, filters, permissions
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action, api_view, permission_classes
-from django.core.mail import send_mail
-from users.models import CustomUser
-from django.shortcuts import get_object_or_404
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.pagination import PageNumberPagination
-from .permissions import (
-    AdminOnly, AdminOrReadOnly,
-    AuthorOrReadOnly, ModeratorOrReadOnly
-)
 from random import randint
-from .serializers import (
-    SignUpSerializer, TokenSerializer, CustomUserSerializer
-)
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+from rest_framework import filters, permissions, status, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from api.permissions import AdminOnly
+
+from users.models import CustomUser
+
+from .serializers import (CustomUserSerializer, SignUpSerializer,
+                          TokenSerializer)
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    Работает над всеми операциями с пользователями от лица админа.
+    Позволяет обычному пользователю редактировать свой профиль.
+    """
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = (AdminOnly,)
@@ -82,6 +85,10 @@ def signup(request):
 
 
 class GetToken(APIView):
+    """
+    Осуществляет выдачу зарегистрированному пользователю.
+    Обновляет истекший токен.
+    """
     def post(self, request):
         serializer = TokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

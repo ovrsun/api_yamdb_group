@@ -22,6 +22,7 @@ class IsAuthorModeratorAdminOrReadOnlyPermission(permissions.BasePermission):
 
 
 class IsAdminUserOrReadOnly(permissions.BasePermission):
+    """Обеспечивает доступ админу и user. Все остальные - безопасные методы."""
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
@@ -37,3 +38,22 @@ class IsAdminOrReadOnlyPermission(permissions.BasePermission):
         if request.user.is_authenticated:
             return (request.user.is_admin or request.user.is_superuser)
         return request.method in permissions.SAFE_METHODS
+
+
+class AdminOnly(permissions.BasePermission):
+    """Обеспечивает доступ только aдмину."""
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return (
+                request.user.is_staff
+                or request.user.is_admin
+            )
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_authenticated:
+            return (
+                request.user.is_staff
+                or request.user.is_admin
+            )
+        return False

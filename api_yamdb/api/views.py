@@ -1,31 +1,25 @@
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.filters import SearchFilter
-from rest_framework import mixins
+from rest_framework.viewsets import ModelViewSet
 
-from .permissions import (
-    IsAuthorModeratorAdminOrReadOnlyPermission, IsAdminUserOrReadOnly,
-    IsAdminOrReadOnlyPermission)
-
-from .serializers import (ReviewSerializer, CommentSerializer,
-                          GenreSerializer, CategorySerializer,
-                          TitleSerializerGet, TitlSerializerPost)
-
-from reviews.models import Title, Review, Category, Genre
+from reviews.models import Category, Genre, Review, Title
 
 from .filters import TitleFilter
 
+from .mixins import ListPostDeleteViewSet
 
-class ListCreateDestroyViewSet(
-    mixins.CreateModelMixin, mixins.ListModelMixin,
-    mixins.DestroyModelMixin, GenericViewSet
-):
-    pass
+from .permissions import (IsAdminOrReadOnlyPermission, IsAdminUserOrReadOnly,
+                          IsAuthorModeratorAdminOrReadOnlyPermission)
+
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer,
+                          TitleSerializerGet, TitlSerializerPost)
 
 
-class CategoryViewSet(ListCreateDestroyViewSet):
+class CategoryViewSet(ListPostDeleteViewSet):
+    """Реализует методы GET, POST, DEL для категорий."""
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnlyPermission, )
@@ -34,7 +28,8 @@ class CategoryViewSet(ListCreateDestroyViewSet):
     lookup_field = 'slug'
 
 
-class GenreViewSet(ListCreateDestroyViewSet):
+class GenreViewSet(ListPostDeleteViewSet):
+    """Реализует методы GET, POST, DEL для жанров."""
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrReadOnlyPermission, )
@@ -44,6 +39,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 
 class TitleViewSet(ModelViewSet):
+    """Работает над всеми операциями с произведениями."""
     queryset = Title.objects.annotate(rating=Avg('reviews__score')).all()
     permission_classes = (IsAdminUserOrReadOnly, )
     filter_backends = (DjangoFilterBackend, )
@@ -56,6 +52,7 @@ class TitleViewSet(ModelViewSet):
 
 
 class ReviewViewSet(ModelViewSet):
+    """Работает над всеми операциями с отзывам."""
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthorModeratorAdminOrReadOnlyPermission,)
 
@@ -69,6 +66,7 @@ class ReviewViewSet(ModelViewSet):
 
 
 class CommentViewSet(ModelViewSet):
+    """Работает над всеми операциями с комментариями к отзывам."""
     serializer_class = CommentSerializer
     permission_classes = (IsAuthorModeratorAdminOrReadOnlyPermission,)
 
