@@ -23,7 +23,7 @@ from .permissions import (IsAdminOrReadOnlyPermission, IsAdminUserOrReadOnly,
 
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
-                          TitleSerializerGet, TitlSerializerPost)
+                          TitleSerializerGet, TitleSerializerPost)
 
 
 class CategoryViewSet(ListPostDeleteViewSet):

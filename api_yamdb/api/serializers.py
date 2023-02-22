@@ -1,6 +1,5 @@
 from rest_framework.serializers import (
     ModelSerializer, SlugRelatedField, IntegerField)
-from rest_framework.validators import UniqueValidator
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework.serializers import (IntegerField, ModelSerializer,
