@@ -1,6 +1,6 @@
 import csv
 from django.core.management import BaseCommand
-from reviews.models import Category, Comment, Genre, Title, Review
+from reviews.models import Category, Comment, Genre, Title, Review, Genre_Title
 from users.models import CustomUser
 
 
@@ -18,7 +18,7 @@ class Command(BaseCommand):
         file_path = 'static/data/genre.csv'
         with open(file_path, "r") as csv_file:
             data = list(csv.DictReader(csv_file, delimiter=","))
-            for row in data[1:]:
+            for row in data:
                 Genre.objects.create(name=row['name'], slug=row['slug'])
 
     def users_load(self):
@@ -43,7 +43,6 @@ class Command(BaseCommand):
                 try:
                     category, _ = Category.objects.get_or_create(pk=row['category'])
                     num = row['category']
-                    self.stdout.write(num)
                     category = Category.objects.get(pk=num)
                     Title.objects.create(
                         name=row['name'],
@@ -73,13 +72,25 @@ class Command(BaseCommand):
         with open(file_path, "r") as csv_file:
             data = list(csv.DictReader(csv_file, delimiter=","))
             for row in data:
-                review, _ = Title.objects.get_or_create(pk=row['review_id'])
+                review, _ = Review.objects.get_or_create(pk=row['review_id'])
                 author = CustomUser.objects.get(pk=row['author'])
                 Comment.objects.create(
                     review_id=review.id,
                     text=row['text'],
                     author_id=author.id,
                     pub_date=row['pub_date']
+                )
+
+    def genre_title_load(self):
+        file_path = 'static/data/genre_title.csv'
+        with open(file_path, "r") as csv_file:
+            data = list(csv.DictReader(csv_file, delimiter=","))
+            for row in data:
+                title, _ = Title.objects.get_or_create(pk=row['title_id'])
+                genre = Genre.objects.get(pk=row['genre_id'])
+                Genre_Title.objects.create(
+                    title_id=title.id,
+                    genre_id=genre.id,
                 )
 
     def handle(self, *args, **options):
@@ -93,3 +104,4 @@ class Command(BaseCommand):
         self.titles_load()
         self.reviews_load()
         self.comments_load()
+        self.genre_title_load()
