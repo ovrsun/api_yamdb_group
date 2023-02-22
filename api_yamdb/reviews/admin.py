@@ -4,7 +4,7 @@ from .models import Category, Genre, Review, Title, Comment
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('pk', 'name', 'slug')
 
 
 class ReviewAdmin(admin.ModelAdmin):
