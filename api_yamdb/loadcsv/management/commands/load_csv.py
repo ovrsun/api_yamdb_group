@@ -41,7 +41,9 @@ class Command(BaseCommand):
             data = list(csv.DictReader(csv_file, delimiter=","))
             for row in data:
                 try:
-                    category, _ = Category.objects.get_or_create(pk=row['category'])
+                    category, _ = Category.objects.get_or_create(
+                        pk=row['category']
+                    )
                     num = row['category']
                     category = Category.objects.get(pk=num)
                     Title.objects.create(
