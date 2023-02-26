@@ -1,6 +1,5 @@
 import csv
 import os
-import sqlite3
 
 from django.conf import settings
 from django.core.management import BaseCommand
@@ -21,22 +20,6 @@ class Command(BaseCommand):
             action='store_true',
             help='Clear all tables in data base.'
         )
-
-    def clear_db(self):
-        con = sqlite3.connect(DB_PATH)
-        cur = con.cursor()
-
-        cur.executescript('''
-        UPDATE `sqlite_sequence` SET `seq` = 0 WHERE `name` = 'reviews_category';
-        UPDATE `sqlite_sequence` SET `seq` = 0 WHERE `name` = 'reviews_title';
-        UPDATE `sqlite_sequence` SET `seq` = 0 WHERE `name` = 'reviews_genre';
-        UPDATE `sqlite_sequence` SET `seq` = 99 WHERE `name` = 'users_customuser';
-        UPDATE `sqlite_sequence` SET `seq` = 0 WHERE `name` = 'reviews_review';
-        UPDATE `sqlite_sequence` SET `seq` = 0 WHERE `name` = 'reviews_genre_title';
-        UPDATE `sqlite_sequence` SET `seq` = 0 WHERE `name` = 'reviews_comment';
-        ''')
-        con.commit()
-        con.close()
 
     def categories_load(self):
         file_path = 'static/data/category.csv'
@@ -118,7 +101,6 @@ class Command(BaseCommand):
             Genre.objects.all().delete()
             Review.objects.all().delete()
             CustomUser.objects.exclude(pk=1).delete()
-            self.clear_db()
 
         self.categories_load()
         self.genres_load()
