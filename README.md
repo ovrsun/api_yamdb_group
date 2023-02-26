@@ -53,6 +53,18 @@ python manage.py migrate --run-syncdb
 python manage.py runserver 
 ```
 
+### Добавление тестовых данных
+Добавить тестовые данные можно с помощью команды `load_csv`:
+```bash
+python manage.py load_csv
+```
+
+Опция `--clear` позволяет очистить БД от предыдущих данных:
+```bash
+python manage.py load_csv --clear
+```
+
+
 ### Примеры работы с API для всех пользователей
 
 Подробная документация доступна по эндпоинту /redoc/
