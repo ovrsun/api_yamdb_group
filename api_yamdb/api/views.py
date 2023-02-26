@@ -80,7 +80,7 @@ class CommentViewSet(ModelViewSet):
     permission_classes = (IsAuthorModeratorAdminOrReadOnlyPermission,)
 
     def get_queryset(self):
-        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))  # Тут в обоих методах стоит проверять еще что мы ревьюим верный тайтл
+        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
         title_id = int(self.kwargs.get('title_id'))
         if title_id == review.title_id:
             return review.comments.all()
