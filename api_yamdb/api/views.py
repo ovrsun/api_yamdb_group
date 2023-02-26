@@ -4,7 +4,15 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
-from reviews.models import Category, Genre, Review, Title
+from .permissions import (
+    IsAuthorModeratorAdminOrReadOnlyPermission, IsAdminUserOrReadOnly,
+    IsAdminOrReadOnlyPermission)
+
+from .serializers import (ReviewSerializer, CommentSerializer,
+                          GenreSerializer, CategorySerializer,
+                          TitleSerializerGet, TitleSerializerPost)
+
+from reviews.models import Title, Review, Category, Genre
 
 from .filters import TitleFilter
 
@@ -15,7 +23,7 @@ from .permissions import (IsAdminOrReadOnlyPermission, IsAdminUserOrReadOnly,
 
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
-                          TitleSerializerGet, TitlSerializerPost)
+                          TitleSerializerGet, TitleSerializerPost)
 
 
 class CategoryViewSet(ListPostDeleteViewSet):
@@ -49,7 +57,7 @@ class TitleViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
             return TitleSerializerGet
-        return TitlSerializerPost
+        return TitleSerializerPost
 
 
 class ReviewViewSet(ModelViewSet):
@@ -72,9 +80,13 @@ class CommentViewSet(ModelViewSet):
     permission_classes = (IsAuthorModeratorAdminOrReadOnlyPermission,)
 
     def get_queryset(self):
-        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
-        return review.comments.all()
+        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))  # Тут в обоих методах стоит проверять еще что мы ревьюим верный тайтл
+        title_id = int(self.kwargs.get('title_id'))
+        if title_id == review.title_id:
+            return review.comments.all()
 
     def perform_create(self, serializer):
         review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
-        serializer.save(author=self.request.user, review=review)
+        title_id = int(self.kwargs.get('title_id'))
+        if title_id == review.title_id:
+            serializer.save(author=self.request.user, review=review)

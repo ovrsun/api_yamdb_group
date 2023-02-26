@@ -1,4 +1,5 @@
 from random import randint
+from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, permissions, status, viewsets
@@ -77,7 +78,7 @@ def signup(request):
     send_mail(
         'Код для вашей регистрации',
         f'Код: {code}',
-        'api_yamdb@yandex.ru',
+        settings.DEFAULT_MAIL,
         [user.email],
         fail_silently=False,
     )

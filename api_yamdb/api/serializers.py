@@ -1,3 +1,5 @@
+from rest_framework.serializers import (
+    ModelSerializer, SlugRelatedField, IntegerField)
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework.serializers import (IntegerField, ModelSerializer,
@@ -32,7 +34,7 @@ class TitleSerializerGet(ModelSerializer):
         read_only_fields = ['__all__']
 
 
-class TitlSerializerPost(ModelSerializer):
+class TitleSerializerPost(ModelSerializer):
     category = SlugRelatedField(
         queryset=Category.objects.all(),
         slug_field='slug'

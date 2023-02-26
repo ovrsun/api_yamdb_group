@@ -4,7 +4,7 @@ from .models import CustomUser
 
 
 class AdminUser(admin.ModelAdmin):
-    list_display = ('username', 'email',
+    list_display = ('pk', 'username', 'email',
                     'first_name', 'last_name', 'bio', 'role')
     search_fields = ('username', 'email')
 

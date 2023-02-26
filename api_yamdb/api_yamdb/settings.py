@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework_simplejwt',
+    'loadcsv',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,6 @@ SIMPLE_JWT = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+DEFAULT_NAME = 'me'
+DEFAULT_MAIL = 'api_yamdb@yandex.ru'
