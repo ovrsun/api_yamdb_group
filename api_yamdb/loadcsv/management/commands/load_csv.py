@@ -12,7 +12,7 @@ class Command(BaseCommand):
         with open(file_path, "r") as csv_file:
             data = list(csv.reader(csv_file, delimiter=","))
             for row in data[1:]:
-                Category.objects.create(name=row[1], slug=row[2])
+                Category.objects.create(name=row[1], slug=row[2])  # Давайте перепишем на bulk_create, иначе будем грустно делать кучу запросов, если файлы будут большими
 
     def genres_load(self):
         file_path = 'static/data/genre.csv'
@@ -96,7 +96,7 @@ class Command(BaseCommand):
                 )
 
     def handle(self, *args, **options):
-        Category.objects.all().delete()
+        Category.objects.all().delete()  # Удалять старые записи стоит только если мы явно хотим это сделать, передав какой-то специальный параметр в команду.
         Title.objects.all().delete()
         Genre.objects.all().delete()
         Review.objects.all().delete()
@@ -106,4 +106,4 @@ class Command(BaseCommand):
         self.titles_load()
         self.reviews_load()
         self.comments_load()
-        self.genre_title_load()
+        self.genre_title_load()  # Надо переписать на bulk_create все, что можно. Оптимизируем загрузку

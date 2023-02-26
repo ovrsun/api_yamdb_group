@@ -77,7 +77,7 @@ def signup(request):
     send_mail(
         'Код для вашей регистрации',
         f'Код: {code}',
-        'api_yamdb@yandex.ru',
+        'api_yamdb@yandex.ru',  # Почту тоже лучше вынести в сеттинги
         [user.email],
         fail_silently=False,
     )
