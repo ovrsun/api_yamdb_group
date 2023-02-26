@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
@@ -40,8 +41,9 @@ class SignUpSerializer(serializers.ModelSerializer):
     )
 
     def validate_username(self, value):
-        if value.lower() == "me":  # me - лучше вынести в сеттинги в константу. Вдруг мы захотим поменять зарезервированное имя?
-            raise serializers.ValidationError("Username 'me' is not valid")
+        if value.lower() == settings.DEFAULT_NAME:
+            raise serializers.ValidationError(
+                f"Username {settings.DEFAULT_NAME} is not valid")
         return value
 
     class Meta:
