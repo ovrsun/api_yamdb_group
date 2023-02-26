@@ -40,7 +40,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     )
 
     def validate_username(self, value):
-        if value.lower() == "me":
+        if value.lower() == "me":  # me - лучше вынести в сеттинги в константу. Вдруг мы захотим поменять зарезервированное имя?
             raise serializers.ValidationError("Username 'me' is not valid")
         return value
 

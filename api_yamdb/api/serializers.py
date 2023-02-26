@@ -49,7 +49,7 @@ class TitleSerializerPost(ModelSerializer):
         fields = ('id', 'name', 'year',
                   'description', 'genre', 'category')
         model = Title
-        # validators = [UniqueValidator(queryset=Category.objects.all())]
+        # validators = [UniqueValidator(queryset=Category.objects.all())]  # Надо решить убирать или оставлять :)
 
 
 class ReviewSerializer(ModelSerializer):
