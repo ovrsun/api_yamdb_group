@@ -81,8 +81,12 @@ class CommentViewSet(ModelViewSet):
 
     def get_queryset(self):
         review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))  # Тут в обоих методах стоит проверять еще что мы ревьюим верный тайтл
-        return review.comments.all()
+        title_id = int(self.kwargs.get('title_id'))
+        if title_id == review.title_id:
+            return review.comments.all()
 
     def perform_create(self, serializer):
         review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
-        serializer.save(author=self.request.user, review=review)
+        title_id = int(self.kwargs.get('title_id'))
+        if title_id == review.title_id:
+            serializer.save(author=self.request.user, review=review)
